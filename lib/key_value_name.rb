@@ -1,100 +1,12 @@
 # frozen_string_literal: true
 
-require 'key_value_name/version'
-require 'scanf'
+require_relative 'key_value_name/version'
+require_relative 'key_value_name/marshallers'
 
 #
 # A terrible idea, but also a useful one.
 #
 module KeyValueName
-  class MarshallerBase
-    def initialize(**kwargs)
-    end
-
-    def write(value)
-      value.to_s
-    end
-  end
-
-  class NumericMarshaller < MarshallerBase
-    def initialize(format: '%f')
-      @format_string = format
-    end
-
-    attr_reader :format_string
-
-    def read(string)
-      values = string.scanf("#{format_string}.")
-      raise "failed to scan: #{string}" if values.empty?
-      [values[0], guess_how_many_characters_we_read(string, values[0])]
-    end
-
-    def write(value)
-      format(format_string, value)
-    end
-
-    private
-
-    def guess_how_many_characters_we_read(string, value)
-      # Unfortunately, scanf does not implement %n, which would tell us how many
-      # characters it read. Instead, we have to guess: count the number of dots
-      # in the formatted output, and skip that many. If the string was generated
-      # using the appropriate format, this should work; otherwise, it may not.
-      formatted_value = format(format_string, value)
-      dot_count = formatted_value.scan(/[.]/).size + 1
-      index = 0
-      while dot_count.positive?
-        raise "not enough dots in #{string}" if index.nil?
-        index = string.index('.', index)
-        dot_count -= 1
-      end
-      index || string.size
-    end
-  end
-
-  class FloatMarshaller < MarshallerBase
-    VALUE_RX = /\A[-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?\.?/
-
-    def read(string)
-      raise "bad value in #{string}" unless string =~ VALUE_RX
-      string_result = Regexp.last_match(0)
-      result = string_result.to_f
-      [result, string_result.size]
-    end
-  end
-
-  class IntegerMarshaller < MarshallerBase
-    VALUE_RX = /\A(\d+)\.?/
-
-    def read(string)
-      raise "bad value in #{string}" unless string =~ VALUE_RX
-      result = Regexp.last_match(1).to_i
-      [result, Regexp.last_match(0).size]
-    end
-
-    def write(value)
-      raise "non-integer value: #{value}" unless value.is_a?(Integer)
-      value.to_s
-    end
-  end
-
-  class SymbolMarshaller < MarshallerBase
-    VALUE_RX = /\A(\w+)\.?/
-
-    def read(string)
-      raise "bad value in #{string}" unless string =~ VALUE_RX
-      result = Regexp.last_match(1).to_sym
-      [result, Regexp.last_match(0).size]
-    end
-  end
-
-  MARSHALLERS = {
-    Float => FloatMarshaller,
-    Integer => IntegerMarshaller,
-    Numeric => NumericMarshaller,
-    Symbol => SymbolMarshaller
-  }.freeze
-
   #
   # Specify the keys and value types for a KeyValueName.
   #
