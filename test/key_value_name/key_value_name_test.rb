@@ -36,67 +36,53 @@ class TestKeyValueName < MiniTest::Test
     n.extension 'bin'
   end
 
-  def test_integer_read
-    name = TestInteger.read('a-123')
-    assert_equal 123, name.a
+  def roundtrip(klass, string, args)
+    name = klass.read(string)
+    assert_equal args.keys, name.to_h.keys
+    args.each do |key, value|
+      assert_equal value, name[key]
+    end
+    assert_equal string, name.to_s
+    name
   end
 
-  def test_integer_to_s
-    assert_equal 'a-123', TestInteger.new(a: 123).to_s
+  def test_integer_roundtrip
+    roundtrip(TestInteger, 'a-123', a: 123)
   end
 
-  def test_hex_integer_read
-    name = TestHexNumeric.read('b-ff')
-    assert_equal 255, name.b
+  def test_hex_numeric_roundtrip
+    roundtrip(TestHexNumeric, 'b-ff', b: 255)
   end
 
-  def test_hex_integer_to_s
-    assert_equal 'b-ff', TestHexNumeric.new(b: 255).to_s
+  def test_symbol_roundtrip
+    roundtrip(TestSymbol, 'a-foo', a: :foo)
   end
 
-  def test_symbol_read
-    name = TestSymbol.read('a-foo')
-    assert_equal :foo, name.a
-  end
-
-  def test_symbol_to_s
-    assert_equal 'a-foo', TestSymbol.new(a: :foo).to_s
+  def test_symbol_accepts_strings
     assert_equal 'a-foo', TestSymbol.new(a: 'foo').to_s
   end
 
-  def test_float_read
-    name = TestFloat.read('a-2.25')
-    assert_equal 2.25, name.a
+  def test_float_roundtrip
+    roundtrip(TestFloat, 'a-2.25', a: 2.25)
   end
 
-  def test_float_to_s
-    assert_equal 'a-2.25', TestSymbol.new(a: 2.25).to_s
+  def test_two_integers_roundtrip
+    roundtrip(TestTwoIntegers, 'a-123.b-ff', a: 123, b: 255)
   end
 
-  def test_two_integers_read
-    name = TestTwoIntegers.read('a-123.b-ff')
-    assert_equal 123, name.a
-    assert_equal 255, name.b
-  end
-
-  def test_two_integers_to_s
-    assert_equal 'a-123.b-ff', TestTwoIntegers.new(a: 123, b: 255).to_s
-  end
-
-  def test_mixed_read
-    name = TestMixed.read('id-foo.ordinal-1234.value-2.5e-11')
+  def test_mixed_roundtrip
+    name = roundtrip(
+      TestMixed,
+      'id-foo.ordinal-1234.value-2.5e-11',
+      id: :foo, ordinal: 1234, value: 2.5e-11
+    )
     assert_equal :foo, name.id
     assert_equal 1234, name.ordinal
     assert_equal 2.5e-11, name.value
   end
 
-  def test_extension_read
-    name = TestExtension.read('big_number-0123.bin')
-    assert_equal 123, name.big_number
-  end
-
-  def test_extension_to_s
-    assert_equal 'big_number-0123.bin', TestExtension.new(big_number: 123).to_s
+  def test_extension_roundtrip
+    roundtrip(TestExtension, 'big_number-0123.bin', big_number: 123)
   end
 
   # def test_a_glob
