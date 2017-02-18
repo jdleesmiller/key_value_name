@@ -4,8 +4,15 @@
 # A terrible idea, but also a useful one.
 #
 module KeyValueName
+  KEY_RX = /\w+/
   KEY_VALUE_SEPARATOR = '-'
   PAIR_SEPARATOR = '__'
+
+  def self.check_key(key)
+    raise ArgumentError, "bad key/value: #{key}" unless key =~ /\A#{KEY_RX}\z/
+    raise ArgumentError, "key/value must not contain separator: #{key}" unless
+      key.to_s.index(PAIR_SEPARATOR).nil?
+  end
 end
 
 require_relative 'key_value_name/version'

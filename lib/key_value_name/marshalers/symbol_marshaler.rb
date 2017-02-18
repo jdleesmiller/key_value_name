@@ -2,7 +2,7 @@
 
 module KeyValueName
   class SymbolMarshaler < MarshalerBase
-    VALUE_RX = /\A\w+/
+    VALUE_RX = /\A#{KEY_RX}\z/
 
     def read(string)
       raise "bad value in #{string}" unless string =~ VALUE_RX
@@ -10,8 +10,7 @@ module KeyValueName
     end
 
     def write(value)
-      raise "value cannot contain separator: #{value}" unless
-        value.to_s.index(PAIR_SEPARATOR).nil?
+      KeyValueName.check_key(value)
       value.to_s
     end
   end
