@@ -2,12 +2,11 @@
 
 module KeyValueName
   class IntegerMarshaler < MarshalerBase
-    VALUE_RX = /\A(\d+)\.?/
+    VALUE_RX = /\A\d+/
 
     def read(string)
       raise "bad value in #{string}" unless string =~ VALUE_RX
-      result = Regexp.last_match(1).to_i
-      [result, Regexp.last_match(0).size]
+      Regexp.last_match(0).to_i
     end
 
     def write(value)

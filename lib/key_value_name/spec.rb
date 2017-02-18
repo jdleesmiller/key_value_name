@@ -7,7 +7,7 @@ module KeyValueName
   class Spec
     NAME_BASE_RX = /\w+/
     NAME_RX = /\A#{NAME_BASE_RX}\z/
-    KEY_RX = /\A(#{NAME_BASE_RX})-/
+    KEY_RX = /\A(#{NAME_BASE_RX})#{KEY_VALUE_SEPARATOR}(.+)\z/
 
     def initialize
       @marshalers = {}
@@ -23,6 +23,8 @@ module KeyValueName
 
     def add_key(name, type:, **kwargs)
       raise ArgumentError, "bad name: #{name}" unless name =~ NAME_RX
+      raise ArgumentError, "name cannot contain separator: #{name}" unless
+        name.to_s.index(PAIR_SEPARATOR).nil?
       raise ArgumentError, "bad type: #{type}" unless MARSHALERS.key?(type)
       raise ArgumentError, "already have: #{name}" if marshalers.key?(name)
       marshalers[name] = MARSHALERS[type].new(**kwargs)
@@ -38,10 +40,10 @@ module KeyValueName
 
     def read(string)
       hash = {}
-      while string =~ KEY_RX
-        string = read_pair(hash, Regexp.last_match(1).to_sym, string)
+      string = check_and_strip_extension(string) unless extension.nil?
+      string.split(PAIR_SEPARATOR).each do |pair|
+        read_pair(hash, pair)
       end
-      raise "failed to read: #{string}" unless check_remainder(string)
       hash
     end
 
@@ -49,26 +51,26 @@ module KeyValueName
       string = name.each_pair.map do |key, value|
         raise "unknown key: #{key}" unless marshalers.key?(key)
         value_string = marshalers[key].write(value)
-        "#{key}-#{value_string}"
-      end.join('.')
+        "#{key}#{KEY_VALUE_SEPARATOR}#{value_string}"
+      end.join(PAIR_SEPARATOR)
       string += ".#{extension}" unless extension.nil?
       string
     end
 
     private
 
-    def read_pair(hash, key, string)
-      raise "unknown key: #{key}" unless marshalers.key?(key)
-      string = string[(key.size + 1)..-1]
-
-      value, value_length = marshalers[key].read(string)
-      hash[key] = value
-      string[value_length..-1]
+    def check_and_strip_extension(name)
+      basename = File.basename(name, ".#{extension}")
+      raise "bad extension: #{name}" if basename == File.basename(name)
+      basename
     end
 
-    def check_remainder(name)
-      return name.empty? if extension.nil?
-      name == ".#{extension}"
+    def read_pair(hash, pair)
+      raise "bad key: #{pair}" unless pair =~ KEY_RX
+      key = Regexp.last_match(1).to_sym
+      value = Regexp.last_match(2)
+      raise "unknown key: #{key}" unless marshalers.key?(key)
+      hash[key] = marshalers[key].read(value)
     end
   end
 end
