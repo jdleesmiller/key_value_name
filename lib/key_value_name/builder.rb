@@ -6,12 +6,12 @@ module KeyValueName
   #
   class Builder
     module ClassMethods
-      def parse_hash(name)
-        key_value_name_spec.parse(name)
+      def read_hash(name)
+        key_value_name_spec.read(name)
       end
 
-      def parse(name)
-        new(parse_hash(name))
+      def read(name)
+        new(read_hash(name))
       end
 
       def glob(path)

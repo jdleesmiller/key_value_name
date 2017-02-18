@@ -36,12 +36,12 @@ module KeyValueName
       end
     end
 
-    def parse(string)
+    def read(string)
       hash = {}
       while string =~ KEY_RX
         string = read_pair(hash, Regexp.last_match(1).to_sym, string)
       end
-      raise "failed to parse: #{string}" unless check_remainder(string)
+      raise "failed to read: #{string}" unless check_remainder(string)
       hash
     end
 
