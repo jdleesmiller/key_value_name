@@ -8,8 +8,8 @@ class TestKeyValueName < MiniTest::Test
     n.key :a, type: Integer
   end
 
-  TestHexInteger = KeyValueName.define do |n|
-    n.key :b, type: Integer, base: 16
+  TestHexNumeric = KeyValueName.define do |n|
+    n.key :b, type: Numeric, format: '%x'
   end
 
   TestSymbol = KeyValueName.define do |n|
@@ -22,7 +22,7 @@ class TestKeyValueName < MiniTest::Test
 
   TestTwoIntegers = KeyValueName.define do |n|
     n.include_keys TestInteger
-    n.include_keys TestHexInteger
+    n.include_keys TestHexNumeric
   end
 
   TestMixed = KeyValueName.define do |n|
@@ -41,12 +41,12 @@ class TestKeyValueName < MiniTest::Test
   end
 
   def test_hex_integer_parse
-    name = TestHexInteger.parse('b-ff')
+    name = TestHexNumeric.parse('b-ff')
     assert_equal 255, name.b
   end
 
   def test_hex_integer_to_s
-    assert_equal 'b-ff', TestHexInteger.new(b: 255).to_s
+    assert_equal 'b-ff', TestHexNumeric.new(b: 255).to_s
   end
 
   def test_symbol_parse

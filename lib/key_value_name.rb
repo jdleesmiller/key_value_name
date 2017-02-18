@@ -16,6 +16,42 @@ module KeyValueName
     end
   end
 
+  class NumericMarshaller < MarshallerBase
+    def initialize(format: '%f')
+      @format_string = format
+    end
+
+    attr_reader :format_string
+
+    def read(string)
+      values = string.scanf("#{format_string}.")
+      raise "failed to scan: #{string}" if values.empty?
+      [values[0], guess_how_many_characters_we_read(string, values[0])]
+    end
+
+    def write(value)
+      format(format_string, value)
+    end
+
+    private
+
+    def guess_how_many_characters_we_read(string, value)
+      # Unfortunately, scanf does not implement %n, which would tell us how many
+      # characters it read. Instead, we have to guess: count the number of dots
+      # in the formatted output, and skip that many. If the string was generated
+      # using the appropriate format, this should work; otherwise, it may not.
+      formatted_value = format(format_string, value)
+      dot_count = formatted_value.scan(/[.]/).size + 1
+      index = 0
+      while dot_count.positive?
+        raise "not enough dots in #{string}" if index.nil?
+        index = string.index('.', index)
+        dot_count -= 1
+      end
+      index || string.size
+    end
+  end
+
   class FloatMarshaller < MarshallerBase
     VALUE_RX = /\A[-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?\.?/
 
@@ -23,41 +59,22 @@ module KeyValueName
       raise "bad value in #{string}" unless string =~ VALUE_RX
       string_result = Regexp.last_match(0)
       result = string_result.to_f
-      [result, string_result]
+      [result, string_result.size]
     end
   end
 
   class IntegerMarshaller < MarshallerBase
-    SUPPORTED_BASES = [10, 16].freeze
-
-    def initialize(base: 10)
-      raise ArgumentError, "unsupported base: #{base}" unless
-        SUPPORTED_BASES.member?(base)
-
-      @base = base
-    end
-
-    attr_reader :base
-
-    def matcher
-      case base
-      when 10 then /\A(\d+)\.?/
-      when 16 then /\A([0-9a-f]+)\.?/i
-      end
-    end
+    VALUE_RX = /\A(\d+)\.?/
 
     def read(string)
-      raise "bad value in #{string}" unless string =~ matcher
-      string_result = Regexp.last_match(0)
-      result = Regexp.last_match(1).to_i(base)
-      [result, string_result]
+      raise "bad value in #{string}" unless string =~ VALUE_RX
+      result = Regexp.last_match(1).to_i
+      [result, Regexp.last_match(0).size]
     end
 
     def write(value)
-      # The error message is pretty confusing if you call to_s on a non-Integer,
-      # so trap that case.
       raise "non-integer value: #{value}" unless value.is_a?(Integer)
-      value.to_s(base)
+      value.to_s
     end
   end
 
@@ -66,15 +83,15 @@ module KeyValueName
 
     def read(string)
       raise "bad value in #{string}" unless string =~ VALUE_RX
-      string_result = Regexp.last_match(0)
       result = Regexp.last_match(1).to_sym
-      [result, string_result]
+      [result, Regexp.last_match(0).size]
     end
   end
 
   MARSHALLERS = {
     Float => FloatMarshaller,
     Integer => IntegerMarshaller,
+    Numeric => NumericMarshaller,
     Symbol => SymbolMarshaller
   }.freeze
 
@@ -121,9 +138,9 @@ module KeyValueName
         raise "unknown key: #{key}" unless marshallers.key?(key)
         name = name[(key.size + 1)..-1]
 
-        value, string_value = marshallers[key].read(name)
+        value, value_length = marshallers[key].read(name)
         hash[key] = value
-        name = name[(string_value.size)..-1]
+        name = name[value_length..-1]
       end
       raise "failed to parse: #{name}" unless name.empty?
       hash
