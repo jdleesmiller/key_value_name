@@ -12,6 +12,14 @@ class TestKeyValueName < MiniTest::Test
     n.key :b, type: Numeric, format: '%x'
   end
 
+  TestFloatNumeric = KeyValueName.define do |n|
+    n.key :c, type: Numeric, format: '%.3f', scan_format: '%f'
+  end
+
+  TestPaddedNumeric = KeyValueName.define do |n|
+    n.key :d, type: Numeric, format: '%04d'
+  end
+
   TestSymbol = KeyValueName.define do |n|
     n.key :a, type: Symbol
   end
@@ -52,6 +60,19 @@ class TestKeyValueName < MiniTest::Test
 
   def test_hex_numeric_roundtrip
     roundtrip(TestHexNumeric, 'b-ff', b: 255)
+  end
+
+  def test_float_numeric_roundtrip
+    roundtrip(TestFloatNumeric, 'c-0.100', c: 0.1)
+    roundtrip(TestFloatNumeric, 'c--0.200', c: -0.2)
+  end
+
+  def test_float_numeric_parse
+    assert_equal(-0.0013, TestFloatNumeric.read('c--1.3e-3').c)
+  end
+
+  def test_padded_numeric_roundtrip
+    roundtrip(TestPaddedNumeric, 'd-0012', d: 12)
   end
 
   def test_symbol_roundtrip
