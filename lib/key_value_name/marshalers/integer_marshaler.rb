@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module KeyValueName
-  class IntegerMarshaller < MarshallerBase
+  class IntegerMarshaler < MarshalerBase
     VALUE_RX = /\A(\d+)\.?/
 
     def read(string)

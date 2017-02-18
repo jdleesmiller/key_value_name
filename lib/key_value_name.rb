@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'key_value_name/version'
-require_relative 'key_value_name/marshallers'
+require_relative 'key_value_name/marshalers'
 
 #
 # A terrible idea, but also a useful one.
@@ -16,41 +16,41 @@ module KeyValueName
     KEY_RX = /\A(#{NAME_BASE_RX})-/
 
     def initialize
-      @marshallers = {}
+      @marshalers = {}
       @extension = nil
     end
 
-    attr_reader :marshallers
+    attr_reader :marshalers
     attr_accessor :extension
 
     def keys
-      marshallers.keys
+      marshalers.keys
     end
 
     def add_key(name, type:, **kwargs)
       raise ArgumentError, "bad name: #{name}" unless name =~ NAME_RX
-      raise ArgumentError, "bad type: #{type}" unless MARSHALLERS.key?(type)
-      raise ArgumentError, "already have: #{name}" if marshallers.key?(name)
-      marshallers[name] = MARSHALLERS[type].new(**kwargs)
+      raise ArgumentError, "bad type: #{type}" unless MARSHALERS.key?(type)
+      raise ArgumentError, "already have: #{name}" if marshalers.key?(name)
+      marshalers[name] = MARSHALERS[type].new(**kwargs)
     end
 
     def add_keys(key_value_name)
       spec = key_value_name.key_value_name_spec
-      spec.marshallers.each do |name, marshaller|
-        raise ArgumentError, "already have: #{name}" if marshallers.key?(name)
-        marshallers[name] = marshaller
+      spec.marshalers.each do |name, marshaler|
+        raise ArgumentError, "already have: #{name}" if marshalers.key?(name)
+        marshalers[name] = marshaler
       end
-      p marshallers
+      p marshalers
     end
 
     def parse(name)
       hash = {}
       while name =~ KEY_RX
         key = Regexp.last_match(1).to_sym
-        raise "unknown key: #{key}" unless marshallers.key?(key)
+        raise "unknown key: #{key}" unless marshalers.key?(key)
         name = name[(key.size + 1)..-1]
 
-        value, value_length = marshallers[key].read(name)
+        value, value_length = marshalers[key].read(name)
         hash[key] = value
         name = name[value_length..-1]
       end
@@ -59,8 +59,8 @@ module KeyValueName
     end
 
     def write(key, value)
-      raise "unknown key: #{key}" unless @marshallers.key?(key)
-      @marshallers[key].write(value)
+      raise "unknown key: #{key}" unless @marshalers.key?(key)
+      @marshalers[key].write(value)
     end
   end
 

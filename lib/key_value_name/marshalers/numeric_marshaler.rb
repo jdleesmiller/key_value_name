@@ -3,7 +3,7 @@
 require 'scanf'
 
 module KeyValueName
-  class NumericMarshaller < MarshallerBase
+  class NumericMarshaler < MarshalerBase
     def initialize(format: '%f')
       @format_string = format
     end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module KeyValueName
-  class FloatMarshaller < MarshallerBase
+  class FloatMarshaler < MarshalerBase
     VALUE_RX = /\A[-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?\.?/
 
     def read(string)

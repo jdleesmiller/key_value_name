@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module KeyValueName
-  class MarshallerBase
+  class MarshalerBase
     def initialize(**kwargs)
     end
 
