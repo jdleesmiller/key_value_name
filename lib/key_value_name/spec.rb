@@ -39,13 +39,7 @@ module KeyValueName
     def parse(string)
       hash = {}
       while string =~ KEY_RX
-        key = Regexp.last_match(1).to_sym
-        raise "unknown key: #{key}" unless marshalers.key?(key)
-        string = string[(key.size + 1)..-1]
-
-        value, value_length = marshalers[key].read(string)
-        hash[key] = value
-        string = string[value_length..-1]
+        string = read_pair(hash, Regexp.last_match(1).to_sym, string)
       end
       raise "failed to parse: #{string}" unless check_remainder(string)
       hash
@@ -62,6 +56,15 @@ module KeyValueName
     end
 
     private
+
+    def read_pair(hash, key, string)
+      raise "unknown key: #{key}" unless marshalers.key?(key)
+      string = string[(key.size + 1)..-1]
+
+      value, value_length = marshalers[key].read(string)
+      hash[key] = value
+      string[value_length..-1]
+    end
 
     def check_remainder(name)
       return name.empty? if extension.nil?
