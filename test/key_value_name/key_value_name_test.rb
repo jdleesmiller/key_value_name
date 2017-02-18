@@ -5,14 +5,14 @@ require 'minitest/autorun'
 
 class TestKeyValueName < MiniTest::Test
   TestInteger = KeyValueName.define do |n|
-    n.key :a, type: Integer
+    n.key :a, type: Numeric, format: '%d'
   end
 
   TestHexNumeric = KeyValueName.define do |n|
     n.key :b, type: Numeric, format: '%x'
   end
 
-  TestFloatNumeric = KeyValueName.define do |n|
+  TestFormattedNumeric = KeyValueName.define do |n|
     n.key :c, type: Numeric, format: '%.3f', scan_format: '%f'
   end
 
@@ -25,7 +25,7 @@ class TestKeyValueName < MiniTest::Test
   end
 
   TestFloat = KeyValueName.define do |n|
-    n.key :a, type: Float
+    n.key :a, type: Numeric
   end
 
   TestTwoIntegers = KeyValueName.define do |n|
@@ -35,8 +35,8 @@ class TestKeyValueName < MiniTest::Test
 
   TestMixed = KeyValueName.define do |n|
     n.key :id, type: Symbol
-    n.key :ordinal, type: Integer
-    n.key :value, type: Float
+    n.key :ordinal, type: Numeric, format: '%d'
+    n.key :value, type: Numeric
   end
 
   TestExtension = KeyValueName.define do |n|
@@ -67,13 +67,13 @@ class TestKeyValueName < MiniTest::Test
     roundtrip(TestHexNumeric, 'b-ff', b: 255)
   end
 
-  def test_float_numeric_roundtrip
-    roundtrip(TestFloatNumeric, 'c-0.100', c: 0.1)
-    roundtrip(TestFloatNumeric, 'c--0.200', c: -0.2)
+  def test_formatted_numeric_roundtrip
+    roundtrip(TestFormattedNumeric, 'c-0.100', c: 0.1)
+    roundtrip(TestFormattedNumeric, 'c--0.200', c: -0.2)
   end
 
-  def test_float_numeric_parse
-    assert_equal(-0.0013, TestFloatNumeric.read('c--1.3e-3').c)
+  def test_formatted_numeric_parse
+    assert_equal(-0.0013, TestFormattedNumeric.read('c--1.3e-3').c)
   end
 
   def test_padded_numeric_roundtrip

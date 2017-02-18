@@ -9,8 +9,8 @@ module KeyValueName
       raise NotImplementedError
     end
 
-    def write(value)
-      value.to_s
+    def write(_value)
+      raise NotImplementedError
     end
   end
 end
