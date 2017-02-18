@@ -31,6 +31,11 @@ class TestKeyValueName < MiniTest::Test
     n.key :value, type: Float
   end
 
+  TestExtension = KeyValueName.define do |n|
+    n.key :big_number, type: Numeric, format: '%04d'
+    n.extension 'bin'
+  end
+
   def test_integer_parse
     name = TestInteger.parse('a-123')
     assert_equal 123, name.a
@@ -83,6 +88,15 @@ class TestKeyValueName < MiniTest::Test
     assert_equal :foo, name.id
     assert_equal 1234, name.ordinal
     assert_equal 2.5e-11, name.value
+  end
+
+  def test_extension_parse
+    name = TestExtension.parse('big_number-0123.bin')
+    assert_equal 123, name.big_number
+  end
+
+  def test_extension_to_s
+    assert_equal 'big_number-0123.bin', TestExtension.new(big_number: 123).to_s
   end
 
   # def test_a_glob

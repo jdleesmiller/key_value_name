@@ -23,10 +23,7 @@ module KeyValueName
 
     module InstanceMethods
       def to_s
-        each_pair.map do |key, value|
-          value_string = self.class.key_value_name_spec.write(key, value)
-          "#{key}-#{value_string}"
-        end.join('.')
+        self.class.key_value_name_spec.write(self)
       end
     end
 

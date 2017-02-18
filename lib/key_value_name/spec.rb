@@ -36,24 +36,36 @@ module KeyValueName
       end
     end
 
-    def parse(name)
+    def parse(string)
       hash = {}
-      while name =~ KEY_RX
+      while string =~ KEY_RX
         key = Regexp.last_match(1).to_sym
         raise "unknown key: #{key}" unless marshalers.key?(key)
-        name = name[(key.size + 1)..-1]
+        string = string[(key.size + 1)..-1]
 
-        value, value_length = marshalers[key].read(name)
+        value, value_length = marshalers[key].read(string)
         hash[key] = value
-        name = name[value_length..-1]
+        string = string[value_length..-1]
       end
-      raise "failed to parse: #{name}" unless name.empty?
+      raise "failed to parse: #{string}" unless check_remainder(string)
       hash
     end
 
-    def write(key, value)
-      raise "unknown key: #{key}" unless @marshalers.key?(key)
-      @marshalers[key].write(value)
+    def write(name)
+      string = name.each_pair.map do |key, value|
+        raise "unknown key: #{key}" unless marshalers.key?(key)
+        value_string = marshalers[key].write(value)
+        "#{key}-#{value_string}"
+      end.join('.')
+      string += ".#{extension}" unless extension.nil?
+      string
+    end
+
+    private
+
+    def check_remainder(name)
+      return name.empty? if extension.nil?
+      name == ".#{extension}"
     end
   end
 end
