@@ -4,13 +4,18 @@
 
 ## Synopsis
 
-Store key-value pairs in file names, e.g. parameter names and parameters for experiments or simulation runs.
+Store key-value pairs in file names, for example parameter names and parameters for experiments or simulation runs.
+
+This gem provides:
+
+1. Some standard naming conventions that work well across platforms by avoiding special characters in file names.
+
+2. Automatic formatting and type conversion for the parameters.
 
 ## Usage
 
 ```rb
 require 'key_value_name'
-require_relative 'lib/key_value_name'
 
 ResultName = KeyValueName.new do |n|
   n.key :seed, type: Numeric, format: '%d'
@@ -23,12 +28,23 @@ name = ResultName.new(
   seed: 123,
   algorithm: :reticulating_splines,
   alpha: 42.1)
-name.to_s # => seed-123.algorithm-reticulating_splines.alpha-42.1.dat
+
+name.to_s
+# => seed-123.algorithm-reticulating_splines.alpha-42.1.dat
+
+name.in('/tmp')
+# => /tmp/seed-123.algorithm-reticulating_splines.alpha-42.1.dat
+
+# Assuming a matching file exists in /tmp.
+ResultName.glob('/tmp')
+# => [#<struct ResultName seed=123, algorithm=:reticulating_splines, alpha=42.1>]
 ```
 
 ## INSTALLATION
 
-  gem install key_value_name
+```
+gem install key_value_name
+```
 
 ## LICENSE
 
