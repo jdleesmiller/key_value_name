@@ -96,13 +96,13 @@ class TestKeyValueName < MiniTest::Test
   end
 
   def test_two_integers_roundtrip
-    roundtrip(TestTwoIntegers, 'a-123__b-ff', a: 123, b: 255)
+    roundtrip(TestTwoIntegers, 'a-123.b-ff', a: 123, b: 255)
   end
 
   def test_mixed_roundtrip
     name = roundtrip(
       TestMixed,
-      'id-foo__ordinal-1234__value-2.5e-11',
+      'id-foo.ordinal-1234.value-2.5e-11',
       id: :foo, ordinal: 1234, value: 2.5e-11
     )
     assert_equal :foo, name.id
@@ -115,10 +115,10 @@ class TestKeyValueName < MiniTest::Test
   end
 
   def test_e_key_roundtrip
-    # A previous version used dots to separate names, which looked nicer, but
-    # it meant that `x-1.e-2` was hard to parse. It's much easier if we can
-    # just assume that the pair separator will not occur in the strings.
-    roundtrip(TestEKey, 'x-1__e-2', x: 1, e: 2)
+    # A file name called `x-1.e-2` could mean `x=1e-2` or `x=1`, `e=2`. It's
+    # still possible to distinguish between them if we know that we're looking
+    # for two keys.
+    roundtrip(TestEKey, 'x-1.e-2', x: 1, e: 2)
   end
 
   def test_missing_key

@@ -45,7 +45,7 @@ module KeyValueName
       pair_rxs = marshalers.map do |name, marshaler|
         /#{name}#{KEY_VALUE_SEPARATOR}(#{marshaler.matcher})/
       end
-      pairs_matcher = pair_rxs.map(&:to_s).join(PAIR_SEPARATOR)
+      pairs_matcher = pair_rxs.map(&:to_s).join(PAIR_SEPARATOR_RX.to_s)
       extension_matcher = extension.nil? ? '' : /[.]#{extension}/.to_s
       Regexp.new('\A' + pairs_matcher + extension_matcher + '\z')
     end
