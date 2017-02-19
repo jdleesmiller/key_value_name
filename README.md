@@ -1,32 +1,40 @@
-= key_value_basename
+# key_value_name
 
-* TODO url
+* https://github.com/jdleesmiller/key_value_name
 
-== SYNOPSIS
+## Synopsis
 
-TODO description
+Store key-value pairs in file names, e.g. parameter names and parameters for experiments or simulation runs.
 
-=== Usage
+## Usage
 
-  TODO (code sample of usage)
+```rb
+require 'key_value_name'
+require_relative 'lib/key_value_name'
 
-== REQUIREMENTS
+ResultName = KeyValueName.new do |n|
+  n.key :seed, type: Numeric, format: '%d'
+  n.key :algorithm, type: Symbol
+  n.key :alpha, type: Numeric
+  n.extension :dat
+end
 
-* TODO (list of requirements)
+name = ResultName.new(
+  seed: 123,
+  algorithm: :reticulating_splines,
+  alpha: 42.1)
+name.to_s # => seed-123.algorithm-reticulating_splines.alpha-42.1.dat
+```
 
-== INSTALLATION
+## INSTALLATION
 
-  sudo gem install key_value_basename
+  gem install key_value_name
 
-== DEVELOPMENT
-
-TODO developer advice
-
-== LICENSE
+## LICENSE
 
 (The MIT License)
 
-Copyright (c) 2017 TODO
+Copyright (c) 2017 John Lees-Miller
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -46,4 +54,3 @@ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
 CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
