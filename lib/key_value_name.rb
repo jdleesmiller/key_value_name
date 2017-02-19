@@ -13,7 +13,7 @@ module KeyValueName
     raise ArgumentError, "bad symbol: #{name}" unless name =~ /\A#{KEY_RX}\z/
   end
 
-  def self.define
+  def self.new
     builder = Builder.new
     yield builder
     builder.build

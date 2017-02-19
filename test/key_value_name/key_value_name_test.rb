@@ -7,47 +7,47 @@ require 'tmpdir'
 require 'key_value_name'
 
 class TestKeyValueName < MiniTest::Test
-  TestInteger = KeyValueName.define do |n|
+  TestInteger = KeyValueName.new do |n|
     n.key :a, type: Numeric, format: '%d'
   end
 
-  TestHexNumeric = KeyValueName.define do |n|
+  TestHexNumeric = KeyValueName.new do |n|
     n.key :b, type: Numeric, format: '%x'
   end
 
-  TestFormattedNumeric = KeyValueName.define do |n|
+  TestFormattedNumeric = KeyValueName.new do |n|
     n.key :c, type: Numeric, format: '%.3f', scan_format: '%f'
   end
 
-  TestPaddedNumeric = KeyValueName.define do |n|
+  TestPaddedNumeric = KeyValueName.new do |n|
     n.key :d, type: Numeric, format: '%04d'
   end
 
-  TestSymbol = KeyValueName.define do |n|
+  TestSymbol = KeyValueName.new do |n|
     n.key :a, type: Symbol
   end
 
-  TestFloat = KeyValueName.define do |n|
+  TestFloat = KeyValueName.new do |n|
     n.key :a, type: Numeric
   end
 
-  TestTwoIntegers = KeyValueName.define do |n|
+  TestTwoIntegers = KeyValueName.new do |n|
     n.include_keys TestInteger
     n.include_keys TestHexNumeric
   end
 
-  TestMixed = KeyValueName.define do |n|
+  TestMixed = KeyValueName.new do |n|
     n.key :id, type: Symbol
     n.key :ordinal, type: Numeric, format: '%d'
     n.key :value, type: Numeric
   end
 
-  TestExtension = KeyValueName.define do |n|
+  TestExtension = KeyValueName.new do |n|
     n.key :big_number, type: Numeric, format: '%04d'
     n.extension 'bin'
   end
 
-  TestEKey = KeyValueName.define do |n|
+  TestEKey = KeyValueName.new do |n|
     n.key :x, type: Numeric
     n.key :e, type: Numeric
   end
