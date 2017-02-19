@@ -31,7 +31,6 @@ module KeyValueName
 
     def write(name)
       string = name.each_pair.map do |key, value|
-        raise ArgumentError, "unknown key: #{key}" unless marshalers.key?(key)
         value_string = marshalers[key].write(value)
         "#{key}#{KEY_VALUE_SEPARATOR}#{value_string}"
       end.join(PAIR_SEPARATOR)

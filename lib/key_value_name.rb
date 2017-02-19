@@ -9,8 +9,8 @@ module KeyValueName
   PAIR_SEPARATOR = '.'
   PAIR_SEPARATOR_RX = /[.]/
 
-  def self.check_key(key)
-    raise ArgumentError, "bad key/value: #{key}" unless key =~ /\A#{KEY_RX}\z/
+  def self.check_symbol(name)
+    raise ArgumentError, "bad symbol: #{name}" unless name =~ /\A#{KEY_RX}\z/
   end
 end
 

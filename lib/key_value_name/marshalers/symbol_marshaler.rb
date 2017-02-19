@@ -2,19 +2,16 @@
 
 module KeyValueName
   class SymbolMarshaler < MarshalerBase
-    VALUE_RX = /\A#{KEY_RX}\z/
-
-    def read(string)
-      raise "bad value in #{string}" unless string =~ VALUE_RX
-      Regexp.last_match(0).to_sym
-    end
-
     def matcher
       KEY_RX
     end
 
+    def read(string)
+      string.to_sym
+    end
+
     def write(value)
-      KeyValueName.check_key(value)
+      KeyValueName.check_symbol(value)
       value.to_s
     end
   end

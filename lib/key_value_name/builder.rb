@@ -46,7 +46,7 @@ module KeyValueName
     end
 
     def key(name, type:, **kwargs)
-      KeyValueName.check_key(name)
+      KeyValueName.check_symbol(name)
       raise ArgumentError, "bad type: #{type}" unless MARSHALERS.key?(type)
       check_no_existing_marshaler(name)
       @marshalers[name] = MARSHALERS[type].new(**kwargs)
@@ -56,7 +56,7 @@ module KeyValueName
       @extension = ext
     end
 
-    def build
+    def build # rubocop:disable Metrics/MethodLength
       raise 'no keys defined' if @marshalers.none?
 
       klass = Struct.new(*@marshalers.keys) do
