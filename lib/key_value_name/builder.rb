@@ -22,6 +22,10 @@ module KeyValueName
     end
 
     module InstanceMethods
+      def in(folder)
+        File.join(folder, to_s)
+      end
+
       def to_s
         self.class.key_value_name_spec.write(self)
       end

@@ -130,4 +130,7 @@ class TestKeyValueName < MiniTest::Test
   # def test_a_glob
   #   p TestA.glob('.')
   # end
+  def test_in_folder
+    assert_equal File.join('foo', 'a-1'), TestInteger.new(a: 1).in('foo')
+  end
 end
