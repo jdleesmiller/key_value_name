@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'gemma', '~> 4.1.0'
 
-  s.files       = Dir.glob('{lib,bin}/**/*.rb') + %w(README.rdoc)
+  s.files       = Dir.glob('{lib,bin}/**/*.rb') + %w(README.md)
   s.test_files  = Dir.glob('test/key_value_name/*_test.rb')
 
   s.rdoc_options = [
