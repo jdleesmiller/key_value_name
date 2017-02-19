@@ -12,6 +12,12 @@ module KeyValueName
   def self.check_symbol(name)
     raise ArgumentError, "bad symbol: #{name}" unless name =~ /\A#{KEY_RX}\z/
   end
+
+  def self.define
+    builder = Builder.new
+    yield builder
+    builder.build
+  end
 end
 
 require_relative 'key_value_name/version'

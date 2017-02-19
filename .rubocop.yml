@@ -4,3 +4,11 @@ AllCops:
 Style/Documentation:
   Exclude:
     - 'test/**/*'
+
+Metrics/ClassLength:
+  Exclude:
+    - 'test/**/*'
+
+Metrics/AbcSize:
+  Exclude:
+    - 'test/**/*'

@@ -5,6 +5,9 @@ module KeyValueName
   # Yield-based Domain-Specific Language (DSL) to build a `KeyValueName`.
   #
   class Builder
+    #
+    # Class methods of the returned `KeyValueName` class.
+    #
     module ClassMethods
       def read_hash(name)
         key_value_name_spec.read(name)
@@ -22,6 +25,9 @@ module KeyValueName
       end
     end
 
+    #
+    # Instance methods of the returned `KeyValueName` class.
+    #
     module InstanceMethods
       def in(folder)
         File.join(folder, to_s)
@@ -81,11 +87,5 @@ module KeyValueName
     def check_no_existing_marshaler(key)
       raise ArgumentError, "already have key: #{key}" if @marshalers.key?(key)
     end
-  end
-
-  def self.define
-    builder = Builder.new
-    yield builder
-    builder.build
   end
 end

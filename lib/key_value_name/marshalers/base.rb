@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 module KeyValueName
+  #
+  # A Marshaler handles conversion of typed values to and from strings.
+  #
   class MarshalerBase
     def initialize(**kwargs)
     end
