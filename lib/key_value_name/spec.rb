@@ -23,14 +23,14 @@ module KeyValueName
     def add_key(name, type:, **kwargs)
       KeyValueName.check_key(name)
       raise ArgumentError, "bad type: #{type}" unless MARSHALERS.key?(type)
-      raise ArgumentError, "already have: #{name}" if marshalers.key?(name)
+      check_no_existing_marshaler(name)
       marshalers[name] = MARSHALERS[type].new(**kwargs)
     end
 
     def add_keys(key_value_name)
       spec = key_value_name.key_value_name_spec
       spec.marshalers.each do |name, marshaler|
-        raise ArgumentError, "already have: #{name}" if marshalers.key?(name)
+        check_no_existing_marshaler(name)
         marshalers[name] = marshaler
       end
     end
@@ -46,7 +46,7 @@ module KeyValueName
 
     def write(name)
       string = name.each_pair.map do |key, value|
-        raise "unknown key: #{key}" unless marshalers.key?(key)
+        check_existing_marshaler(key)
         value_string = marshalers[key].write(value)
         "#{key}#{KEY_VALUE_SEPARATOR}#{value_string}"
       end.join(PAIR_SEPARATOR)
@@ -55,6 +55,14 @@ module KeyValueName
     end
 
     private
+
+    def check_no_existing_marshaler(name)
+      raise ArgumentError, "already have key: #{name}" if marshalers.key?(name)
+    end
+
+    def check_existing_marshaler(name)
+      raise ArgumentError, "unknown key: #{name}" unless marshalers.key?(name)
+    end
 
     def check_and_strip_extension(name)
       basename = File.basename(name, ".#{extension}")
@@ -66,7 +74,7 @@ module KeyValueName
       raise "bad key: #{pair}" unless pair =~ PAIR_RX
       key = Regexp.last_match(1).to_sym
       value = Regexp.last_match(2)
-      raise "unknown key: #{key}" unless marshalers.key?(key)
+      check_existing_marshaler(key)
       hash[key] = marshalers[key].read(value)
     end
   end

@@ -118,6 +118,15 @@ class TestKeyValueName < MiniTest::Test
     roundtrip(TestEKey, 'x-1__e-2', x: 1, e: 2)
   end
 
+  def test_missing_key
+    assert_raises do
+      TestInteger.new(b: 3)
+    end
+    assert_raises(ArgumentError) do
+      TestInteger.read('b-3')
+    end
+  end
+
   # def test_a_glob
   #   p TestA.glob('.')
   # end
