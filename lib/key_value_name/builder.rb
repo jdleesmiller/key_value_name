@@ -16,8 +16,9 @@ module KeyValueName
 
       def glob(path)
         Dir.glob(File.join(path, '*')).map do |name|
-          p name
-        end
+          basename = File.basename(name)
+          new(read_hash(basename)) if key_value_name_spec.matches?(basename)
+        end.compact
       end
     end
 

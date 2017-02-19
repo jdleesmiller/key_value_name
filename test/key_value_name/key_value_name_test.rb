@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
-require 'key_value_name'
 require 'minitest/autorun'
+require 'fileutils'
+require 'tmpdir'
+
+require 'key_value_name'
 
 class TestKeyValueName < MiniTest::Test
   TestInteger = KeyValueName.define do |n|
@@ -127,10 +130,18 @@ class TestKeyValueName < MiniTest::Test
     end
   end
 
-  # def test_a_glob
-  #   p TestA.glob('.')
-  # end
   def test_in_folder
     assert_equal File.join('foo', 'a-1'), TestInteger.new(a: 1).in('foo')
+  end
+
+  def test_glob_with_integers
+    Dir.mktmpdir do |tmp|
+      FileUtils.touch TestInteger.new(a: 1).in(tmp)
+      FileUtils.touch TestInteger.new(a: 2).in(tmp)
+      names = TestInteger.glob(tmp).sort_by(&:a)
+      assert_equal 2, names.size
+      assert_equal 1, names[0].a
+      assert_equal 2, names[1].a
+    end
   end
 end

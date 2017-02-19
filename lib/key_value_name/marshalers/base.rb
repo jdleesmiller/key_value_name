@@ -5,6 +5,10 @@ module KeyValueName
     def initialize(**kwargs)
     end
 
+    def matcher
+      raise NotImplementedError
+    end
+
     def read(_string)
       raise NotImplementedError
     end

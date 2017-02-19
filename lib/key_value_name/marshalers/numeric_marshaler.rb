@@ -25,6 +25,12 @@ module KeyValueName
       @scan_format_string || format_string
     end
 
+    def matcher
+      # This is the usual regex, except that it also has to match `%x` formats,
+      # so it allows hexadecimal whole numbers.
+      /[-+]?[0-9]*\.?[0-9a-f]+(?:e[-+]?[0-9]+)?/i
+    end
+
     def read(string)
       values = string.scanf(scan_format_string)
       raise "failed to scan: #{string}" if values.empty?

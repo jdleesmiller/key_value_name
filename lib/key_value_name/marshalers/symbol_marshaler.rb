@@ -9,6 +9,10 @@ module KeyValueName
       Regexp.last_match(0).to_sym
     end
 
+    def matcher
+      KEY_RX
+    end
+
     def write(value)
       KeyValueName.check_key(value)
       value.to_s

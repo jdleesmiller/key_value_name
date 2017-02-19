@@ -5,8 +5,6 @@ module KeyValueName
   # Specify the keys and value types for a KeyValueName.
   #
   class Spec
-    PAIR_RX = /\A(#{KEY_RX})#{KEY_VALUE_SEPARATOR}(.+)\z/
-
     def initialize
       @marshalers = {}
       @extension = nil
@@ -34,13 +32,19 @@ module KeyValueName
       end
     end
 
+    def matcher
+      @matcher ||= build_matcher
+    end
+
+    def matches?(string)
+      string =~ matcher
+    end
+
     def read(string)
-      hash = {}
-      string = check_and_strip_extension(string) unless extension.nil?
-      string.split(PAIR_SEPARATOR).each do |pair|
-        read_pair(hash, pair)
-      end
-      hash
+      raise ArgumentError, "bad filename: #{string}" unless string =~ matcher
+      Hash[marshalers.map.with_index do |(key, marshaler), index|
+        [key, marshaler.read(Regexp.last_match(index + 1))]
+      end]
     end
 
     def write(name)
@@ -63,18 +67,13 @@ module KeyValueName
       raise ArgumentError, "unknown key: #{name}" unless marshalers.key?(name)
     end
 
-    def check_and_strip_extension(name)
-      basename = File.basename(name, ".#{extension}")
-      raise "bad extension: #{name}" if basename == File.basename(name)
-      basename
-    end
-
-    def read_pair(hash, pair)
-      raise "bad key: #{pair}" unless pair =~ PAIR_RX
-      key = Regexp.last_match(1).to_sym
-      value = Regexp.last_match(2)
-      check_existing_marshaler(key)
-      hash[key] = marshalers[key].read(value)
+    def build_matcher
+      pair_rxs = marshalers.map do |name, marshaler|
+        /#{name}#{KEY_VALUE_SEPARATOR}(#{marshaler.matcher})/
+      end
+      pairs_matcher = pair_rxs.map(&:to_s).join(PAIR_SEPARATOR)
+      extension_matcher = extension.nil? ? '' : /[.]#{extension}/.to_s
+      Regexp.new('\A' + pairs_matcher + extension_matcher + '\z')
     end
   end
 end
