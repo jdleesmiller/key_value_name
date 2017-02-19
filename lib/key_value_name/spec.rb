@@ -5,7 +5,6 @@ module KeyValueName
   # Specify the keys and value types for a KeyValueName.
   #
   class Spec
-    NAME_RX = /\A#{KEY_RX}\z/
     PAIR_RX = /\A(#{KEY_RX})#{KEY_VALUE_SEPARATOR}(.+)\z/
 
     def initialize
