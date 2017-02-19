@@ -33,25 +33,33 @@ module KeyValueName
     end
 
     def initialize
-      @spec = Spec.new
+      @marshalers = {}
+      @extension = nil
     end
 
     def include_keys(key_value_name_klass)
-      @spec.add_keys(key_value_name_klass)
+      spec = key_value_name_klass.key_value_name_spec
+      spec.marshalers.each do |name, marshaler|
+        check_no_existing_marshaler(name)
+        @marshalers[name] = marshaler
+      end
     end
 
-    def key(name, **kwargs)
-      @spec.add_key(name, **kwargs)
+    def key(name, type:, **kwargs)
+      KeyValueName.check_key(name)
+      raise ArgumentError, "bad type: #{type}" unless MARSHALERS.key?(type)
+      check_no_existing_marshaler(name)
+      @marshalers[name] = MARSHALERS[type].new(**kwargs)
     end
 
-    def extension(ext)
-      @spec.extension = ext
+    def extension(ext) # rubocop:disable Style/TrivialAccessors
+      @extension = ext
     end
 
     def build
-      raise 'no keys defined' if @spec.keys.none?
+      raise 'no keys defined' if @marshalers.none?
 
-      klass = Struct.new(*@spec.keys) do
+      klass = Struct.new(*@marshalers.keys) do
         def initialize(**kwargs)
           super(*kwargs.keys)
           kwargs.each { |k, v| self[k] = v }
@@ -64,8 +72,14 @@ module KeyValueName
           attr_accessor :key_value_name_spec
         end
       end
-      klass.key_value_name_spec = @spec
+      klass.key_value_name_spec = Spec.new(@marshalers, @extension)
       klass
+    end
+
+    private
+
+    def check_no_existing_marshaler(key)
+      raise ArgumentError, "already have key: #{key}" if @marshalers.key?(key)
     end
   end
 

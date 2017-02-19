@@ -5,36 +5,18 @@ module KeyValueName
   # Specify the keys and value types for a KeyValueName.
   #
   class Spec
-    def initialize
-      @marshalers = {}
-      @extension = nil
+    def initialize(marshalers, extension)
+      @marshalers = marshalers
+      @extension = extension
+      @matcher = build_matcher
+
+      marshalers.freeze
+      freeze
     end
 
     attr_reader :marshalers
-    attr_accessor :extension
-
-    def keys
-      marshalers.keys
-    end
-
-    def add_key(name, type:, **kwargs)
-      KeyValueName.check_key(name)
-      raise ArgumentError, "bad type: #{type}" unless MARSHALERS.key?(type)
-      check_no_existing_marshaler(name)
-      marshalers[name] = MARSHALERS[type].new(**kwargs)
-    end
-
-    def add_keys(klass)
-      spec = klass.key_value_name_spec
-      spec.marshalers.each do |name, marshaler|
-        check_no_existing_marshaler(name)
-        marshalers[name] = marshaler
-      end
-    end
-
-    def matcher
-      @matcher ||= build_matcher
-    end
+    attr_reader :extension
+    attr_reader :matcher
 
     def matches?(string)
       string =~ matcher
@@ -49,7 +31,7 @@ module KeyValueName
 
     def write(name)
       string = name.each_pair.map do |key, value|
-        check_existing_marshaler(key)
+        raise ArgumentError, "unknown key: #{key}" unless marshalers.key?(key)
         value_string = marshalers[key].write(value)
         "#{key}#{KEY_VALUE_SEPARATOR}#{value_string}"
       end.join(PAIR_SEPARATOR)
@@ -58,14 +40,6 @@ module KeyValueName
     end
 
     private
-
-    def check_no_existing_marshaler(name)
-      raise ArgumentError, "already have key: #{name}" if marshalers.key?(name)
-    end
-
-    def check_existing_marshaler(name)
-      raise ArgumentError, "unknown key: #{name}" unless marshalers.key?(name)
-    end
 
     def build_matcher
       pair_rxs = marshalers.map do |name, marshaler|
