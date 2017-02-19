@@ -26,8 +26,8 @@ module KeyValueName
       marshalers[name] = MARSHALERS[type].new(**kwargs)
     end
 
-    def add_keys(key_value_name)
-      spec = key_value_name.key_value_name_spec
+    def add_keys(klass)
+      spec = klass.key_value_name_spec
       spec.marshalers.each do |name, marshaler|
         check_no_existing_marshaler(name)
         marshalers[name] = marshaler

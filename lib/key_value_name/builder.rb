@@ -31,8 +31,8 @@ module KeyValueName
       @spec = Spec.new
     end
 
-    def include_keys(key_value_name)
-      @spec.add_keys(key_value_name)
+    def include_keys(key_value_name_klass)
+      @spec.add_keys(key_value_name_klass)
     end
 
     def key(name, **kwargs)
