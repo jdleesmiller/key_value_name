@@ -1,6 +1,10 @@
 AllCops:
   TargetRubyVersion: 2.4
 
+# I feel like it's fine for a single parameter.
+Style/FormatStringToken:
+  Enabled: false
+
 Style/Documentation:
   Exclude:
     - 'test/**/*'

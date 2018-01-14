@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 # frozen_string_literal: true
 
 lib = File.expand_path('../lib/', __FILE__)
@@ -18,9 +17,9 @@ Gem::Specification.new do |s|
   s.description       = 'Store key-value pairs in file names, e.g.' \
                         ' parameter names and parameters.'
 
-  s.add_development_dependency 'gemma', '~> 4.1.0'
+  s.add_development_dependency 'gemma', '~> 5.0.1'
 
-  s.files       = Dir.glob('{lib,bin}/**/*.rb') + %w(README.md)
+  s.files       = Dir.glob('{lib,bin}/**/*.rb') + %w[README.md]
   s.test_files  = Dir.glob('test/key_value_name/*_test.rb')
 
   s.rdoc_options = [

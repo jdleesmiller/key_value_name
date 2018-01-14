@@ -10,7 +10,8 @@ module KeyValueName
   PAIR_SEPARATOR_RX = /[.]/
 
   def self.check_symbol(name)
-    raise ArgumentError, "bad symbol: #{name}" unless name =~ /\A#{KEY_RX}\z/
+    raise ArgumentError, "bad symbol: #{name}" unless
+      name.match?(/\A#{KEY_RX}\z/)
   end
 
   def self.new

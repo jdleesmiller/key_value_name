@@ -5,8 +5,7 @@ module KeyValueName
   # A Marshaler handles conversion of typed values to and from strings.
   #
   class MarshalerBase
-    def initialize(**kwargs)
-    end
+    def initialize(**kwargs) end
 
     def matcher
       raise NotImplementedError
