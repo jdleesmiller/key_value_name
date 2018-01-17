@@ -7,49 +7,49 @@ require 'tmpdir'
 require 'key_value_name'
 
 class TestKeyValueName < MiniTest::Test
-  TestInteger = KeyValueName.new do |n|
-    n.key :a, type: Numeric, format: '%d'
+  TestInteger = KeyValueName.new do
+    key :a, type: Numeric, format: '%d'
   end
 
-  TestHexNumeric = KeyValueName.new do |n|
-    n.key :b, type: Numeric, format: '%x'
+  TestHexNumeric = KeyValueName.new do
+    key :b, type: Numeric, format: '%x'
   end
 
-  TestFormattedNumeric = KeyValueName.new do |n|
-    n.key :c, type: Numeric, format: '%.3f', scan_format: '%f'
+  TestFormattedNumeric = KeyValueName.new do
+    key :c, type: Numeric, format: '%.3f', scan_format: '%f'
   end
 
-  TestPaddedNumeric = KeyValueName.new do |n|
-    n.key :d, type: Numeric, format: '%04d'
+  TestPaddedNumeric = KeyValueName.new do
+    key :d, type: Numeric, format: '%04d'
   end
 
-  TestSymbol = KeyValueName.new do |n|
-    n.key :a, type: Symbol
+  TestSymbol = KeyValueName.new do
+    key :a, type: Symbol
   end
 
-  TestFloat = KeyValueName.new do |n|
-    n.key :a, type: Numeric
+  TestFloat = KeyValueName.new do
+    key :a, type: Numeric
   end
 
-  TestTwoIntegers = KeyValueName.new do |n|
-    n.include_keys TestInteger
-    n.include_keys TestHexNumeric
+  TestTwoIntegers = KeyValueName.new do
+    include_keys TestInteger
+    include_keys TestHexNumeric
   end
 
-  TestMixed = KeyValueName.new do |n|
-    n.key :id, type: Symbol
-    n.key :ordinal, type: Numeric, format: '%d'
-    n.key :value, type: Numeric
+  TestMixed = KeyValueName.new do
+    key :id, type: Symbol
+    key :ordinal, type: Numeric, format: '%d'
+    key :value, type: Numeric
   end
 
-  TestExtension = KeyValueName.new do |n|
-    n.key :big_number, type: Numeric, format: '%04d'
-    n.extension 'bin'
+  TestExtension = KeyValueName.new do
+    key :big_number, type: Numeric, format: '%04d'
+    extension 'bin'
   end
 
-  TestEKey = KeyValueName.new do |n|
-    n.key :x, type: Numeric
-    n.key :e, type: Numeric
+  TestEKey = KeyValueName.new do
+    key :x, type: Numeric
+    key :e, type: Numeric
   end
 
   def roundtrip(klass, string, args)
@@ -130,14 +130,10 @@ class TestKeyValueName < MiniTest::Test
     end
   end
 
-  def test_in_folder
-    assert_equal File.join('foo', 'a-1'), TestInteger.new(a: 1).in('foo')
-  end
-
   def test_glob_with_integers
     Dir.mktmpdir do |tmp|
-      FileUtils.touch TestInteger.new(a: 1).in(tmp)
-      FileUtils.touch TestInteger.new(a: 2).in(tmp)
+      FileUtils.touch File.join(tmp, TestInteger.new(a: 1).to_s)
+      FileUtils.touch File.join(tmp, TestInteger.new(a: 2).to_s)
       names = TestInteger.glob(tmp).sort_by(&:a)
       assert_equal 2, names.size
       assert_equal 1, names[0].a
