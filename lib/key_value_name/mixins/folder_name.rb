@@ -12,6 +12,7 @@ module KeyValueName
 
       def mkdir!
         FileUtils.mkdir_p(to_s)
+        self
       end
 
       def destroy!

@@ -13,6 +13,7 @@ module KeyValueName
       def touch!
         retried ||= false
         FileUtils.touch(to_s)
+        self
       rescue Errno::ENOENT
         FileUtils.mkdir_p(File.dirname(to_s))
         raise if retried

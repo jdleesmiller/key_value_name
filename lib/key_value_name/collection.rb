@@ -20,8 +20,16 @@ module KeyValueName
       @klass.glob(@parent)
     end
 
-    def where; end
+    def where(**kwargs)
+      all.select do |name|
+        kwargs.all? do |key, value|
+          name[key] == value
+        end
+      end
+    end
 
-    def find_by; end
+    def find_by(**kwargs)
+      where(**kwargs).first
+    end
   end
 end
