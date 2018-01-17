@@ -140,4 +140,9 @@ class TestKeyValueName < MiniTest::Test
       assert_equal 2, names[1].a
     end
   end
+
+  def test_sortable
+    names = [TestInteger.new(a: 2), TestInteger.new(a: 1)]
+    assert_equal [1, 2], names.sort.map(&:a)
+  end
 end

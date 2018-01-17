@@ -18,6 +18,10 @@ module KeyValueName
           result
         end
       end
+
+      def <=>(other)
+        to_a <=> other.to_a
+      end
     end
 
     #

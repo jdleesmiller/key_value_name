@@ -17,7 +17,7 @@ module KeyValueName
     end
 
     def all
-      @klass.glob(@parent)
+      @klass.glob(@parent).sort
     end
 
     def where(**kwargs)
