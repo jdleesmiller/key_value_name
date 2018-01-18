@@ -8,8 +8,15 @@ module KeyValueName
     include ContainerBuilder
 
     def initialize(name, &block)
+      @name = name
       @builders = []
-      super
+      super(&block)
+    end
+
+    attr_reader :name
+
+    def class_name
+      KeyValueName.camelize(name)
     end
 
     def build

@@ -5,13 +5,10 @@ module KeyValueName
   # Yield-based Domain-Specific Language (DSL) to build a `KeyValueName`.
   #
   class KeyValueBuilder
-    def initialize(name, &block)
-      @name = name
+    def initialize(&block)
       @marshalers = {}
       instance_eval(&block) if block_given?
     end
-
-    attr_reader :name
 
     def include_keys(key_value_name_klass)
       spec = key_value_name_klass.key_value_name_spec

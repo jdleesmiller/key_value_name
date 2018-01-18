@@ -5,13 +5,23 @@ module KeyValueName
   # Build a file KeyValueName.
   #
   class FileBuilder < KeyValueBuilder
-    def initialize(name, &block)
-      @extension = nil
-      super
+    def initialize(name, *extension, &block)
+      @name = name
+      @extension = extension
+      super(&block)
     end
 
-    def extension(extension) # rubocop:disable Style/TrivialAccessors
-      @extension = extension
+    def extension(extension)
+      raise 'extension already set' if @extension.any?
+      @extension = Array(extension)
+    end
+
+    def name
+      name_parts.join('_').to_sym
+    end
+
+    def class_name
+      name_parts.map { |part| KeyValueName.camelize(part) }.join('')
     end
 
     def build
@@ -29,10 +39,14 @@ module KeyValueName
 
     private
 
+    def name_parts
+      [@name] + @extension
+    end
+
     def make_spec
       prefix = @name
       prefix = "#{prefix}#{KEY_VALUE_SEPARATOR}" if prefix && @marshalers.any?
-      suffix = ".#{@extension}" if @extension
+      suffix = ".#{@extension.join('.')}" if @extension.any?
       Spec.new(@marshalers, prefix, suffix)
     end
   end
