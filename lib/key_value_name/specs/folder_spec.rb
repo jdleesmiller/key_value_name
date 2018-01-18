@@ -5,7 +5,7 @@ module KeyValueName
   # Spec for a key value name of the form `name/key-value`.
   #
   class FolderSpec < Spec
-    def initialize(name, marshalers)
+    def initialize(marshalers, name)
       @name = name
       super(marshalers)
     end

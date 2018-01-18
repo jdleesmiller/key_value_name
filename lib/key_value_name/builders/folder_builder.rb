@@ -29,9 +29,9 @@ module KeyValueName
 
     def make_spec
       if @marshalers.any?
-        FolderSpec.new(name, @marshalers)
+        FolderSpec.new(@marshalers, name)
       else
-        SimpleFolderSpec.new(name)
+        Spec.new(@marshalers, name.to_s)
       end
     end
   end
