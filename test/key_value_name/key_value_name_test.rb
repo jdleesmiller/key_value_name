@@ -53,7 +53,7 @@ class TestKeyValueName < MiniTest::Test
   end
 
   def roundtrip(klass, string, args)
-    name = klass.read(string)
+    name = klass.parse(string)
     assert_equal args.keys, name.to_h.keys
     args.each do |key, value|
       assert_equal value, name[key]
@@ -76,7 +76,7 @@ class TestKeyValueName < MiniTest::Test
   end
 
   def test_formatted_numeric_parse
-    assert_equal(-0.0013, TestFormattedNumeric.read('c--1.3e-3').c)
+    assert_equal(-0.0013, TestFormattedNumeric.parse('c--1.3e-3').c)
   end
 
   def test_padded_numeric_roundtrip
@@ -126,7 +126,7 @@ class TestKeyValueName < MiniTest::Test
       TestInteger.new(b: 3)
     end
     assert_raises(ArgumentError) do
-      TestInteger.read('b-3')
+      TestInteger.parse('b-3')
     end
   end
 

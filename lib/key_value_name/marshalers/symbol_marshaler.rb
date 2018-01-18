@@ -9,11 +9,11 @@ module KeyValueName
       KEY_RX
     end
 
-    def read(string)
+    def parse(string)
       string.to_sym
     end
 
-    def write(value)
+    def generate(value)
       KeyValueName.check_symbol(value)
       value.to_s
     end

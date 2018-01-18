@@ -11,11 +11,11 @@ module KeyValueName
       raise NotImplementedError
     end
 
-    def read(_string)
+    def parse(_string)
       raise NotImplementedError
     end
 
-    def write(_value)
+    def generate(_value)
       raise NotImplementedError
     end
   end

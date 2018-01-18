@@ -16,7 +16,7 @@ module KeyValueName
       File.join(name.to_s, super)
     end
 
-    def write(struct)
+    def generate(struct)
       File.join(name.to_s, super)
     end
   end

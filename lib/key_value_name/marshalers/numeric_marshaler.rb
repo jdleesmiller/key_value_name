@@ -31,13 +31,13 @@ module KeyValueName
       /[-+]?[0-9]*\.?[0-9a-f]+(?:e[-+]?[0-9]+)?/i
     end
 
-    def read(string)
+    def parse(string)
       values = string.scanf(scan_format_string)
       raise "failed to scan: #{string}" if values.empty?
       values.first
     end
 
-    def write(value)
+    def generate(value)
       format(format_string, value)
     end
   end

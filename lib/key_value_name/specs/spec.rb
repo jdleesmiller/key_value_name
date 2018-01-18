@@ -32,16 +32,16 @@ module KeyValueName
       end
     end
 
-    def read(basename)
+    def parse(basename)
       raise ArgumentError, "bad name: #{basename}" unless matcher =~ basename
       Hash[marshalers.map.with_index do |(key, marshaler), index|
-        [key, marshaler.read(Regexp.last_match(index + 1))]
+        [key, marshaler.parse(Regexp.last_match(index + 1))]
       end]
     end
 
-    def write(struct)
+    def generate(struct)
       body = struct.each_pair.map do |key, value|
-        value_string = marshalers[key].write(value)
+        value_string = marshalers[key].generate(value)
         "#{key}#{KEY_VALUE_SEPARATOR}#{value_string}"
       end.join(PAIR_SEPARATOR)
       "#{prefix}#{body}#{suffix}"

@@ -11,7 +11,7 @@ module KeyValueName
       attr_accessor :key_value_name_parent
 
       def to_s
-        result = self.class.key_value_name_spec.write(self)
+        result = self.class.key_value_name_spec.generate(self)
         if key_value_name_parent
           File.join(key_value_name_parent.to_s, result)
         else
@@ -30,19 +30,19 @@ module KeyValueName
     module ClassMethods
       attr_accessor :key_value_name_spec
 
-      def read_hash(name)
-        key_value_name_spec.read(name)
+      def parse_to_hash(name)
+        key_value_name_spec.parse(name)
       end
 
-      def read(name)
-        new(read_hash(name))
+      def parse(name)
+        new(parse_to_hash(name))
       end
 
       def glob(parent)
         Dir.glob(File.join(parent.to_s, key_value_name_spec.glob)).map do |name|
           basename = File.basename(name)
           next unless key_value_name_spec.matches?(basename)
-          name = new(read_hash(basename))
+          name = parse(basename)
           name.key_value_name_parent = parent
           name
         end.compact
