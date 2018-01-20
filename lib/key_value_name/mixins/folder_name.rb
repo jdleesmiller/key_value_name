@@ -10,6 +10,10 @@ module KeyValueName
     module InstanceMethods
       include Name::InstanceMethods
 
+      def exist?
+        Dir.exist?(to_s)
+      end
+
       def mkdir!
         FileUtils.mkdir_p(to_s)
         self

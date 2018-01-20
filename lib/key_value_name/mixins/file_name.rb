@@ -10,6 +10,20 @@ module KeyValueName
     module InstanceMethods
       include Name::InstanceMethods
 
+      def exist?
+        File.exist?(to_s)
+      end
+
+      #
+      # Ensure that the parent folder exists.
+      #
+      # @return [self]
+      #
+      def mkdir!
+        parent.mkdir!
+        self
+      end
+
       def touch!
         retried ||= false
         FileUtils.touch(to_s)

@@ -14,5 +14,9 @@ module KeyValueName
     def to_s
       @root
     end
+
+    def mkdir!
+      Dir.mkdir_p(to_s)
+    end
   end
 end
