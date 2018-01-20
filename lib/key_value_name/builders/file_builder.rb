@@ -5,10 +5,11 @@ module KeyValueName
   # Build a file KeyValueName.
   #
   class FileBuilder < KeyValueBuilder
-    def initialize(name, *extension, &block)
+    def initialize(name, *extension, class_name: nil, &block)
       KeyValueName.check_symbol(name) if name
       @name = name
       @extension = extension
+      @class_name = class_name
       super(&block)
     end
 
@@ -22,7 +23,7 @@ module KeyValueName
     end
 
     def class_name
-      name_parts.map { |part| KeyValueName.camelize(part) }.join('')
+      @class_name || default_class_name
     end
 
     def build
@@ -42,6 +43,10 @@ module KeyValueName
 
     def name_parts
       [@name] + @extension
+    end
+
+    def default_class_name
+      name_parts.map { |part| KeyValueName.camelize(part) }.join('')
     end
 
     def make_spec

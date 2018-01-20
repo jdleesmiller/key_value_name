@@ -5,14 +5,12 @@ module KeyValueName
   # TODO
   #
   module ContainerBuilder
-    def file(child_name, *extension, &block)
-      KeyValueName.check_symbol(child_name)
-      @builders << FileBuilder.new(child_name, *extension, &block)
+    def file(*args, &block)
+      @builders << FileBuilder.new(*args, &block)
     end
 
-    def folder(child_name, &block)
-      KeyValueName.check_symbol(child_name)
-      @builders << FolderBuilder.new(child_name, &block)
+    def folder(*args, &block)
+      @builders << FolderBuilder.new(*args, &block)
     end
 
     def extend_with_builders(klass)

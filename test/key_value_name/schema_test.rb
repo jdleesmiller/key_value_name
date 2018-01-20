@@ -61,6 +61,12 @@ class TestSchema < MiniTest::Test
     end
   end
 
+  CustomClassNameSchema = KeyValueName.schema do
+    folder :foo, class_name: :CustomFoo do
+      file :bar, class_name: :CustomBar
+    end
+  end
+
   def test_one_file_schema
     Dir.mktmpdir do |tmp|
       schema = OneFileSchema.new(root: tmp)
@@ -230,5 +236,20 @@ class TestSchema < MiniTest::Test
       end
     end
     assert_match(/reserved symbol/, error.message)
+  end
+
+  def test_custom_class_name
+    Dir.mktmpdir do |tmp|
+      schema = CustomClassNameSchema.new(root: tmp)
+
+      foo = schema.foo.new
+      assert_match(/CustomClassNameSchema::CustomFoo\z/, foo.class.to_s)
+
+      bar = foo.bar.new
+      assert_match(
+        /CustomClassNameSchema::CustomFoo::CustomBar\z/,
+        bar.class.to_s
+      )
+    end
   end
 end

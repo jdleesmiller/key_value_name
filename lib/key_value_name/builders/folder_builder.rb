@@ -7,9 +7,10 @@ module KeyValueName
   class FolderBuilder < KeyValueBuilder
     include ContainerBuilder
 
-    def initialize(name, &block)
+    def initialize(name, class_name: nil, &block)
       KeyValueName.check_symbol(name)
       @name = name
+      @class_name = class_name
       @builders = []
       super(&block)
     end
@@ -17,7 +18,7 @@ module KeyValueName
     attr_reader :name
 
     def class_name
-      KeyValueName.camelize(name)
+      @class_name || KeyValueName.camelize(name)
     end
 
     def build
