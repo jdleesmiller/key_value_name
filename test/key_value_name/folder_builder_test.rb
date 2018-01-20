@@ -7,7 +7,7 @@ require 'key_value_name'
 class TestFolderBuilder < MiniTest::Test
   OneFolderSetSchema = KeyValueName.schema do
     folder :foo do
-      key :a, type: Numeric, format: '%d'
+      key :a, type: Integer
     end
   end
 

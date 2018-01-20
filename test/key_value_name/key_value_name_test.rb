@@ -8,19 +8,19 @@ require 'key_value_name'
 
 class TestKeyValueName < MiniTest::Test
   TestInteger = KeyValueName.new do
-    key :a, type: Numeric, format: '%d'
+    key :a, type: Integer, format: '%d'
   end
 
   TestHexNumeric = KeyValueName.new do
-    key :b, type: Numeric, format: '%x'
+    key :b, type: Integer, format: '%x'
   end
 
   TestFormattedNumeric = KeyValueName.new do
-    key :c, type: Numeric, format: '%.3f', scan_format: '%f'
+    key :c, type: Float, format: '%.3f'
   end
 
   TestPaddedNumeric = KeyValueName.new do
-    key :d, type: Numeric, format: '%04d'
+    key :d, type: Integer, format: '%04d'
   end
 
   TestSymbol = KeyValueName.new do
@@ -28,7 +28,7 @@ class TestKeyValueName < MiniTest::Test
   end
 
   TestFloat = KeyValueName.new do
-    key :a, type: Numeric
+    key :a, type: Float
   end
 
   TestTwoIntegers = KeyValueName.new do
@@ -38,18 +38,18 @@ class TestKeyValueName < MiniTest::Test
 
   TestMixed = KeyValueName.new do
     key :id, type: Symbol
-    key :ordinal, type: Numeric, format: '%d'
-    key :value, type: Numeric
+    key :ordinal, type: Integer
+    key :value, type: Float
   end
 
   TestExtension = KeyValueName.new do
-    key :big_number, type: Numeric, format: '%04d'
+    key :big_number, type: Integer, format: '%04d'
     extension 'bin'
   end
 
   TestEKey = KeyValueName.new do
-    key :x, type: Numeric
-    key :e, type: Numeric
+    key :x, type: Float
+    key :e, type: Float
   end
 
   def roundtrip(klass, string, args)
@@ -93,6 +93,13 @@ class TestKeyValueName < MiniTest::Test
 
   def test_float_roundtrip
     roundtrip(TestFloat, 'a-2.25', a: 2.25)
+  end
+
+  def test_exponent_float_roundtrip
+    roundtrip(TestFloat, 'a-1e+06', a: 1e6)
+    roundtrip(TestFloat, 'a--1e+06', a: -1e6)
+    roundtrip(TestFloat, 'a-1e-06', a: 1e-6)
+    roundtrip(TestFloat, 'a--1e-06', a: -1e-6)
   end
 
   def test_two_integers_roundtrip

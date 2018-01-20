@@ -12,7 +12,7 @@ class TestSchema < MiniTest::Test
 
   OneFileSetSchema = KeyValueName.schema do
     file :foo do
-      key :a, type: Numeric
+      key :a, type: Integer
     end
   end
 
@@ -22,27 +22,27 @@ class TestSchema < MiniTest::Test
 
   OneFolderSetSchema = KeyValueName.schema do
     folder :foo do
-      key :a, type: Numeric
+      key :a, type: Integer
     end
   end
 
   OneFolderSetOneFileSchema = KeyValueName.schema do
     folder :foo do
-      key :a, type: Numeric
+      key :a, type: Integer
       file :bar
     end
   end
 
   OneFolderSetOneFolderSchema = KeyValueName.schema do
     folder :foo do
-      key :a, type: Numeric
+      key :a, type: Integer
       folder :bar
     end
   end
 
   OneFolderSetOneFolderSetSchema = KeyValueName.schema do
     folder :foo do
-      key :a, type: Numeric
+      key :a, type: Integer
       folder :bar do
         key :b, type: Symbol
       end
@@ -51,11 +51,11 @@ class TestSchema < MiniTest::Test
 
   TripleNestedSchema = KeyValueName.schema do
     folder :foo do
-      key :a, type: Numeric
+      key :a, type: Integer
       folder :bar do
-        key :b, type: Numeric
+        key :b, type: Integer
         folder :baz do
-          key :c, type: Numeric
+          key :c, type: Integer
         end
       end
     end

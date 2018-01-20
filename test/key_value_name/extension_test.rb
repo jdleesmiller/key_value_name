@@ -13,11 +13,11 @@ class TestExtension < MiniTest::Test
     file :foo, :tar, :gz
 
     file :bar, :tar do
-      key :a, type: Numeric
+      key :a, type: Integer
     end
 
     file :bar, :tar, :gz do
-      key :a, type: Numeric
+      key :a, type: Integer
     end
   end
 
