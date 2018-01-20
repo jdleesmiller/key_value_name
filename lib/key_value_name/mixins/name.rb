@@ -8,12 +8,12 @@ module KeyValueName
     # Instance method mixin for a KeyValueName.
     #
     module InstanceMethods
-      attr_accessor :key_value_name_parent
+      attr_accessor :parent
 
       def to_s
         result = self.class.key_value_name_spec.generate(self)
-        if key_value_name_parent
-          File.join(key_value_name_parent.to_s, result)
+        if parent
+          File.join(parent.to_s, result)
         else
           result
         end
@@ -43,7 +43,7 @@ module KeyValueName
           basename = File.basename(name)
           next unless key_value_name_spec.matches?(basename)
           name = parse(basename)
-          name.key_value_name_parent = parent
+          name.parent = parent
           name
         end.compact
       end

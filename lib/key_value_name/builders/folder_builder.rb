@@ -8,6 +8,7 @@ module KeyValueName
     include ContainerBuilder
 
     def initialize(name, &block)
+      KeyValueName.check_symbol(name)
       @name = name
       @builders = []
       super(&block)

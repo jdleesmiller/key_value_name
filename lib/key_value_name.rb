@@ -16,6 +16,8 @@ module KeyValueName
   def self.check_symbol(name)
     raise ArgumentError, "bad symbol: #{name}" unless
       name.match?(/\A#{KEY_RX}\z/)
+    raise ArgumentError, "reserved symbol: #{name}" if
+      %i[parent].member?(name)
   end
 
   def self.new(name = nil, &block)

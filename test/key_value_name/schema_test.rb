@@ -191,4 +191,44 @@ class TestSchema < MiniTest::Test
       assert_equal [], schema.foo.all
     end
   end
+
+  def test_parent
+    Dir.mktmpdir do |tmp|
+      schema = TripleNestedSchema.new(root: tmp)
+
+      foo = schema.foo.new(a: 1)
+      bar = foo.bar.new(b: 2)
+      baz = bar.baz.new(c: 3)
+
+      assert_equal schema, foo.parent
+      assert_equal foo, bar.parent
+      assert_equal bar, baz.parent
+      assert_equal foo, baz.parent.parent
+    end
+  end
+
+  def test_reserved_keys
+    error = assert_raises(ArgumentError) do
+      KeyValueName.schema do
+        file :parent
+      end
+    end
+    assert_match(/reserved symbol/, error.message)
+
+    error = assert_raises(ArgumentError) do
+      KeyValueName.schema do
+        folder :parent
+      end
+    end
+    assert_match(/reserved symbol/, error.message)
+
+    error = assert_raises(ArgumentError) do
+      KeyValueName.schema do
+        folder :foo do
+          key :parent, type: Integer
+        end
+      end
+    end
+    assert_match(/reserved symbol/, error.message)
+  end
 end

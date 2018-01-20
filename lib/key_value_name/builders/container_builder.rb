@@ -6,10 +6,12 @@ module KeyValueName
   #
   module ContainerBuilder
     def file(child_name, *extension, &block)
+      KeyValueName.check_symbol(child_name)
       @builders << FileBuilder.new(child_name, *extension, &block)
     end
 
     def folder(child_name, &block)
+      KeyValueName.check_symbol(child_name)
       @builders << FolderBuilder.new(child_name, &block)
     end
 

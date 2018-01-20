@@ -6,6 +6,7 @@ module KeyValueName
   #
   class FileBuilder < KeyValueBuilder
     def initialize(name, *extension, &block)
+      KeyValueName.check_symbol(name) if name
       @name = name
       @extension = extension
       super(&block)

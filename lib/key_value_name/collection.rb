@@ -14,7 +14,7 @@ module KeyValueName
 
     def new(*args)
       object = @klass.new(*args)
-      object.key_value_name_parent = @parent
+      object.parent = @parent
       object
     end
 
