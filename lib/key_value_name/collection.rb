@@ -5,6 +5,8 @@ module KeyValueName
   # A collection of KeyValueNames.
   #
   class Collection
+    include Enumerable
+
     def initialize(klass, parent)
       @klass = klass
       @parent = parent
@@ -14,6 +16,10 @@ module KeyValueName
       object = @klass.new(*args)
       object.key_value_name_parent = @parent
       object
+    end
+
+    def each(&block)
+      all.each(&block)
     end
 
     def all
