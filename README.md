@@ -4,7 +4,7 @@
 
 ## Synopsis
 
-Store key-value pairs in file names, for example parameter names and parameters for experiments or simulation runs.
+An 'object-file system mapper' for managing data files. Key-value pairs describing the data in each file are stored in its name. Useful for managing data files for experiments or simulation runs.
 
 This gem provides:
 
@@ -12,32 +12,45 @@ This gem provides:
 
 2. Automatic formatting and type conversion for the parameters.
 
+3. A schema builder to organize files and folders and declare what parameters are allowed.
+
 ## Usage
 
 ```rb
 require 'key_value_name'
 
-ResultName = KeyValueName.new do |n|
-  n.key :seed, type: Numeric, format: '%d'
-  n.key :algorithm, type: Symbol
-  n.key :alpha, type: Numeric
-  n.extension :dat
+Results = KeyValueName.schema do
+  folder :simulation do
+    key :seed, type: Integer, format: '%06d'
+    key :algorithm, type: Symbol
+    key :alpha, type: Float
+
+    file :stats, :csv
+  end
 end
 
-name = ResultName.new(
+results = Results.new(root: 'data/results')
+
+sim = results.simulation.new(
   seed: 123,
   algorithm: :reticulating_splines,
   alpha: 42.1)
 
-name.to_s
-# => seed-123.algorithm-reticulating_splines.alpha-42.1.dat
+sim.to_s
+# => "data/results/simulation-seed-000123.algorithm-reticulating_splines.alpha-42.1"
 
-name.in('/tmp')
-# => /tmp/seed-123.algorithm-reticulating_splines.alpha-42.1.dat
+sim.stats_csv.to_s
+# => "data/results/simulation-seed-000123.algorithm-reticulating_splines.alpha-42.1/stats.csv"
 
-# Assuming a matching file exists in /tmp.
-ResultName.glob('/tmp')
-# => [#<struct ResultName seed=123, algorithm=:reticulating_splines, alpha=42.1>]
+# Pretend we've run a simulation and written the results...
+sim.stats_csv.touch!
+
+# List the results
+results.simulation.all
+# => [#<struct Results::Simulation seed=123, algorithm=:reticulating_splines, alpha=42.1>]
+
+results.simulation.all.map(&:stats_csv).map(&:to_s)
+# => ["data/results/simulation-seed-000123.algorithm-reticulating_splines.alpha-42.1/stats.csv"]
 ```
 
 ## INSTALLATION
@@ -50,7 +63,7 @@ gem install key_value_name
 
 (The MIT License)
 
-Copyright (c) 2017 John Lees-Miller
+Copyright (c) 2017-2018 John Lees-Miller
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
