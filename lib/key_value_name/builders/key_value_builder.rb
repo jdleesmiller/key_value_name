@@ -10,6 +10,10 @@ module KeyValueName
       instance_eval(&block) if block_given?
     end
 
+    def singular?
+      @marshalers.none?
+    end
+
     def include_keys(key_value_name_klass)
       spec = key_value_name_klass.key_value_name_spec
       spec.marshalers.each do |name, marshaler|

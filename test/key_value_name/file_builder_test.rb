@@ -37,7 +37,7 @@ class TestFileBuilder < MiniTest::Test
       schema = OneFolderSetOneFileSchema.new(root: tmp)
 
       foo = schema.foo.new(a: 1)
-      bar = foo.bar.new.mkdir!
+      bar = foo.bar.mkdir!
       assert_equal File.join(foo.to_s, 'bar'), bar.to_s
       assert_equal [foo], schema.foo.all
       assert foo.exist?

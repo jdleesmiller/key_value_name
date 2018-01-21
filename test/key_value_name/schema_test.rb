@@ -70,16 +70,16 @@ class TestSchema < MiniTest::Test
   def test_one_file_schema
     Dir.mktmpdir do |tmp|
       schema = OneFileSchema.new(root: tmp)
-      assert_equal [], schema.foo.all
+      foo = schema.foo
+      assert !foo.exist?
 
-      foo = schema.foo.new
       assert_equal File.join(tmp, 'foo'), foo.to_s
 
       foo.touch!
-      assert_equal [foo], schema.foo.all
+      assert foo.exist?
 
       foo.destroy!
-      assert_equal [], schema.foo.all
+      assert !foo.exist?
     end
   end
 
@@ -101,16 +101,16 @@ class TestSchema < MiniTest::Test
   def test_one_folder_schema
     Dir.mktmpdir do |tmp|
       schema = OneFolderSchema.new(root: tmp)
-      assert_equal [], schema.foo.all
+      foo = schema.foo
+      assert !foo.exist?
 
-      foo = schema.foo.new
       assert_equal File.join(tmp, 'foo'), foo.to_s
 
       foo.mkdir!
-      assert_equal [foo], schema.foo.all
+      assert foo.exist?
 
       foo.destroy!
-      assert_equal [], schema.foo.all
+      assert !foo.exist?
     end
   end
 
@@ -134,14 +134,14 @@ class TestSchema < MiniTest::Test
       schema = OneFolderSetOneFileSchema.new(root: tmp)
 
       foo = schema.foo.new(a: 1)
-      bar = foo.bar.new
+      bar = foo.bar
       assert_equal File.join(tmp, 'foo', 'a-1', 'bar'), bar.to_s
 
       bar.touch!
-      assert_equal [bar], foo.bar.all
+      assert bar.exist?
 
       bar.destroy!
-      assert_equal [], foo.bar.all
+      assert !bar.exist?
     end
   end
 
@@ -150,14 +150,14 @@ class TestSchema < MiniTest::Test
       schema = OneFolderSetOneFolderSchema.new(root: tmp)
 
       foo = schema.foo.new(a: 1)
-      bar = foo.bar.new
+      bar = foo.bar
       assert_equal File.join(tmp, 'foo', 'a-1', 'bar'), bar.to_s
 
       bar.mkdir!
-      assert_equal [bar], foo.bar.all
+      assert bar.exist?
 
       bar.destroy!
-      assert_equal [], foo.bar.all
+      assert !bar.exist?
     end
   end
 
@@ -242,10 +242,10 @@ class TestSchema < MiniTest::Test
     Dir.mktmpdir do |tmp|
       schema = CustomClassNameSchema.new(root: tmp)
 
-      foo = schema.foo.new
+      foo = schema.foo
       assert_match(/CustomClassNameSchema::CustomFoo\z/, foo.class.to_s)
 
-      bar = foo.bar.new
+      bar = foo.bar
       assert_match(
         /CustomClassNameSchema::CustomFoo::CustomBar\z/,
         bar.class.to_s
