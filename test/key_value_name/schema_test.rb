@@ -120,11 +120,11 @@ class TestSchema < MiniTest::Test
       assert_equal [], schema.foo.all
 
       foo1 = schema.foo.new(a: 1)
-      assert_equal File.join(tmp, 'foo', 'a-1'), foo1.to_s
+      assert_equal File.join(tmp, 'foo-a-1'), foo1.to_s
       assert_equal 1, foo1.a
 
       foo2 = schema.foo.new(a: 2)
-      assert_equal File.join(tmp, 'foo', 'a-2'), foo2.to_s
+      assert_equal File.join(tmp, 'foo-a-2'), foo2.to_s
       assert_equal 2, foo2.a
     end
   end
@@ -135,7 +135,7 @@ class TestSchema < MiniTest::Test
 
       foo = schema.foo.new(a: 1)
       bar = foo.bar
-      assert_equal File.join(tmp, 'foo', 'a-1', 'bar'), bar.to_s
+      assert_equal File.join(tmp, 'foo-a-1', 'bar'), bar.to_s
 
       bar.touch!
       assert bar.exist?
@@ -151,7 +151,7 @@ class TestSchema < MiniTest::Test
 
       foo = schema.foo.new(a: 1)
       bar = foo.bar
-      assert_equal File.join(tmp, 'foo', 'a-1', 'bar'), bar.to_s
+      assert_equal File.join(tmp, 'foo-a-1', 'bar'), bar.to_s
 
       bar.mkdir!
       assert bar.exist?
@@ -167,7 +167,7 @@ class TestSchema < MiniTest::Test
 
       foo = schema.foo.new(a: 1)
       bar = foo.bar.new(b: :c)
-      assert_equal File.join(tmp, 'foo', 'a-1', 'bar', 'b-c'), bar.to_s
+      assert_equal File.join(tmp, 'foo-a-1', 'bar-b-c'), bar.to_s
 
       bar.mkdir!
       assert_equal [bar], foo.bar.all
@@ -185,7 +185,7 @@ class TestSchema < MiniTest::Test
       bar = foo.bar.new(b: 2)
       baz = bar.baz.new(c: 3)
       assert_equal \
-        File.join(tmp, 'foo', 'a-1', 'bar', 'b-2', 'baz', 'c-3'), baz.to_s
+        File.join(tmp, 'foo-a-1', 'bar-b-2', 'baz-c-3'), baz.to_s
 
       baz.mkdir!
       assert_equal [baz], bar.baz.all

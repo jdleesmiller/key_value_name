@@ -37,11 +37,9 @@ module KeyValueName
     private
 
     def make_spec
-      if @marshalers.any?
-        FolderSpec.new(@marshalers, name)
-      else
-        Spec.new(@marshalers, name.to_s)
-      end
+      prefix = @name
+      prefix = "#{prefix}#{KEY_VALUE_SEPARATOR}" if prefix && @marshalers.any?
+      Spec.new(@marshalers, prefix)
     end
   end
 end
