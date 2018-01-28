@@ -20,7 +20,7 @@ module KeyValueName
       end
 
       def <=>(other)
-        to_a <=> other.to_a
+        self.class.key_value_name_spec.compare(self, other)
       end
     end
 

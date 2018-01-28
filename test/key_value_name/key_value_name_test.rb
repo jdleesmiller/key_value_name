@@ -52,6 +52,10 @@ class TestKeyValueName < MiniTest::Test
     key :e, type: Float
   end
 
+  TestBoolean = KeyValueName.new do
+    key :a, type: :boolean
+  end
+
   def roundtrip(klass, string, args)
     name = klass.parse(string)
     assert_equal args.keys, name.to_h.keys
@@ -128,6 +132,11 @@ class TestKeyValueName < MiniTest::Test
     roundtrip(TestEKey, 'x-1.e-2', x: 1, e: 2)
   end
 
+  def test_boolean_roundtrip
+    roundtrip(TestBoolean, 'a-true', a: true)
+    roundtrip(TestBoolean, 'a-false', a: false)
+  end
+
   def test_missing_key
     assert_raises do
       TestInteger.new(b: 3)
@@ -151,5 +160,11 @@ class TestKeyValueName < MiniTest::Test
   def test_sortable
     names = [TestInteger.new(a: 2), TestInteger.new(a: 1)]
     assert_equal [1, 2], names.sort.map(&:a)
+
+    names = [TestInteger.new(a: 1), TestInteger.new(a: 1)]
+    assert_equal [1, 1], names.sort.map(&:a)
+
+    names = [TestBoolean.new(a: true), TestBoolean.new(a: false)]
+    assert_equal [false, true], names.sort.map(&:a)
   end
 end

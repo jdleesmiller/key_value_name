@@ -18,5 +18,9 @@ module KeyValueName
     def generate(_value)
       raise NotImplementedError
     end
+
+    def to_comparable(value)
+      value
+    end
   end
 end

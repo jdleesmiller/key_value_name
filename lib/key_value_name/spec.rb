@@ -47,6 +47,19 @@ module KeyValueName
       "#{prefix}#{body}#{suffix}"
     end
 
+    def compare(a, b)
+      return 0 if a.nil? && b.nil?
+      return nil if a.nil? || b.nil?
+      a.each_pair do |key, value|
+        marshaler = marshalers[key]
+        a_comparable = marshaler.to_comparable(value)
+        b_comparable = marshaler.to_comparable(b[key])
+        signum = a_comparable <=> b_comparable
+        return signum if signum != 0
+      end
+      0
+    end
+
     protected
 
     def build_matcher
