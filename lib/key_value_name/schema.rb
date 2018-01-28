@@ -15,6 +15,10 @@ module KeyValueName
       @root
     end
 
+    def parent
+      nil
+    end
+
     def mkdir!
       Dir.mkdir_p(to_s)
     end

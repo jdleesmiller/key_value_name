@@ -206,6 +206,7 @@ class TestSchema < MiniTest::Test
       bar = foo.bar.new(b: 2)
       baz = bar.baz.new(c: 3)
 
+      assert_nil schema.parent
       assert_equal schema, foo.parent
       assert_equal foo, bar.parent
       assert_equal bar, baz.parent
