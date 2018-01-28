@@ -36,7 +36,7 @@ module KeyValueName
       end
 
       def destroy!
-        FileUtils.rm(to_s)
+        FileUtils.rm_f(to_s)
       end
     end
 

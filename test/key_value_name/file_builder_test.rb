@@ -32,6 +32,23 @@ class TestFileBuilder < MiniTest::Test
     end
   end
 
+  def test_file_destroy!
+    Dir.mktmpdir do |tmp|
+      schema = OneFolderSetOneFileSchema.new(root: tmp)
+
+      # Should suceed even if parent directory does not exist.
+      foo = schema.foo.new(a: 1)
+      assert !foo.exist?
+      foo.bar.destroy!
+      assert !foo.bar.exist?
+
+      foo.bar.touch!
+      assert foo.bar.exist?
+      foo.bar.destroy!
+      assert !foo.bar.exist?
+    end
+  end
+
   def test_file_mkdir!
     Dir.mktmpdir do |tmp|
       schema = OneFolderSetOneFileSchema.new(root: tmp)
