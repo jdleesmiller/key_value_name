@@ -63,7 +63,7 @@ gem install key_value_name
 
 (The MIT License)
 
-Copyright (c) 2017-2018 John Lees-Miller
+Copyright (c) 2017-2025 John Lees-Miller
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
