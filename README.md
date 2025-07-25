@@ -2,6 +2,9 @@
 
 * https://github.com/jdleesmiller/key_value_name
 
+[![Build Status](https://github.com/jdleesmiller/key_value_name/actions/workflows/ci.yml/badge.svg)](https://github.com/jdleesmiller/key_value_name/actions/workflows/ci.yml)
+[![Gem Version](https://badge.fury.io/rb/key_value_name.png)](http://badge.fury.io/rb/key_value_name)
+
 ## Synopsis
 
 An 'object-file system mapper' for managing data files. Key-value pairs describing the data in each file are stored in its name. Useful for managing data files for experiments or simulation runs.
