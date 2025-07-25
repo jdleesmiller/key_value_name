@@ -17,6 +17,8 @@ Gem::Specification.new do |s|
   s.description       = 'Store key-value pairs in file names, e.g.' \
                         ' parameter names and parameters.'
 
+  s.add_dependency 'ostruct', '~> 0.6.3'
+
   s.add_development_dependency 'gemma', '~> 6.0.0'
 
   s.files       = Dir.glob('{lib,bin}/**/*.rb') + %w[README.md]
