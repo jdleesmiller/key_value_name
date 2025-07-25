@@ -6,7 +6,7 @@ require 'tmpdir'
 
 require 'key_value_name'
 
-class TestKeyValueName < MiniTest::Test
+class TestKeyValueName < Minitest::Test
   TestInteger = KeyValueName.new do
     key :a, type: Integer, format: '%d'
   end

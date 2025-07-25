@@ -4,7 +4,7 @@ require 'minitest/autorun'
 
 require 'key_value_name'
 
-class TestExtension < MiniTest::Test
+class TestExtension < Minitest::Test
   ExtensionSchema = KeyValueName.schema do
     file :foo
 

@@ -5,12 +5,12 @@ module KeyValueName
   # TODO
   #
   module ContainerBuilder
-    def file(*args, &block)
-      @builders << FileBuilder.new(*args, &block)
+    def file(...)
+      @builders << FileBuilder.new(...)
     end
 
-    def folder(*args, &block)
-      @builders << FolderBuilder.new(*args, &block)
+    def folder(...)
+      @builders << FolderBuilder.new(...)
     end
 
     def extend_with_builders(klass)

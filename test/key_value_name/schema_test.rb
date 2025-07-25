@@ -5,7 +5,7 @@ require 'tmpdir'
 
 require 'key_value_name'
 
-class TestSchema < MiniTest::Test
+class TestSchema < Minitest::Test
   OneFileSchema = KeyValueName.schema do
     file :foo
   end

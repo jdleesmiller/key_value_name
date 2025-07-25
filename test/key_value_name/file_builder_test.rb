@@ -4,7 +4,7 @@ require 'minitest/autorun'
 
 require 'key_value_name'
 
-class TestFileBuilder < MiniTest::Test
+class TestFileBuilder < Minitest::Test
   OneFolderSetSchema = KeyValueName.schema do
     file :foo do
       key :a, type: Integer

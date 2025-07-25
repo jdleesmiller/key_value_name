@@ -4,7 +4,7 @@ require 'minitest/autorun'
 
 require 'key_value_name'
 
-class TestFolderBuilder < MiniTest::Test
+class TestFolderBuilder < Minitest::Test
   OneFolderSetSchema = KeyValueName.schema do
     folder :foo do
       key :a, type: Integer
